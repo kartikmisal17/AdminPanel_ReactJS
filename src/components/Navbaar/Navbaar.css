@@ -1,0 +1,84 @@
+/* Navbar Styling */
+.navbar {
+    background: linear-gradient(to right, #ff416c, #ff4b2b) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    padding: 10px 20px;
+    transition: all 0.3s ease-in-out;
+}
+
+.navbar-brand {
+    font-size: 24px;
+    font-weight: bold;
+    color: white !important;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-toggler {
+    border: none !important;
+    outline: none !important;
+}
+
+.navbar-nav .nav-link {
+    font-size: 18px;
+    font-weight: 500;
+    color: white !important;
+    margin-right: 15px;
+    transition: all 0.3s ease-in-out;
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+
+.navbar-nav .nav-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff !important;
+    transform: scale(1.05);
+}
+
+/* Search Box */
+.form-control {
+    width: 200px;
+    border-radius: 25px;
+    padding: 8px 15px;
+    border: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.form-control:focus {
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
+    outline: none;
+}
+
+/* Search Button */
+.btn-outline-success {
+    color: white;
+    border-color: white;
+    transition: all 0.3s ease-in-out;
+}
+
+.btn-outline-success:hover {
+    background: white;
+    color: #ff416c;
+    transform: scale(1.1);
+}
+
+/* Sticky Navbar */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

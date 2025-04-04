@@ -1,0 +1,140 @@
+/* Global Styling */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Background Animation */
+.login-box {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  overflow: hidden;
+}
+
+/* Floating Animated Particles */
+.login-box span {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  animation: animate 10s linear infinite;
+}
+
+@keyframes animate {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh);
+    opacity: 0;
+  }
+}
+
+/* Generate Multiple Animated Elements */
+.login-box span:nth-child(odd) {
+  width: 6px;
+  height: 6px;
+  animation-duration: 6s;
+}
+.login-box span:nth-child(even) {
+  width: 8px;
+  height: 8px;
+  animation-duration: 8s;
+}
+
+/* Glassmorphic Sign-in Box */
+.signin {
+  position: relative;
+  width: 400px;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+  transition: 0.3s ease-in-out;
+}
+
+/* Hover Effect */
+.signin:hover {
+  box-shadow: 0 4px 40px rgba(255, 255, 255, 0.3);
+}
+
+/* Title */
+h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 20px;
+}
+
+/* Input Box */
+.inputBox {
+  position: relative;
+  margin: 20px 0;
+}
+
+.inputBox input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  color: white;
+  background: transparent;
+  border: none;
+  outline: none;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+  transition: 0.3s ease;
+}
+
+/* Floating Labels */
+.inputBox i {
+  position: absolute;
+  left: 0;
+  top: 10px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  transition: 0.3s;
+  pointer-events: none;
+}
+
+/* Label Animation on Focus */
+.inputBox input:focus ~ i,
+.inputBox input:valid ~ i {
+  top: -10px;
+  font-size: 12px;
+  color: #ffcc00;
+}
+
+/* Submit Button */
+.inputBox input[type="submit"] {
+  width: 100%;
+  background: #ffcc00;
+  color: black;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.inputBox input[type="submit"]:hover {
+  background: #ff9900;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .signin {
+    width: 90%;
+    padding: 30px;
+  }
+}
