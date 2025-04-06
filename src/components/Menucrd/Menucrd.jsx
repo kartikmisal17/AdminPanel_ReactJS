@@ -3,29 +3,19 @@ import Table from "react-bootstrap/Table";
 import { useState, useEffect } from "react";
 import React from "react";
 import axios from "axios";
-import "./Menucrd.css"
-
-
+import "./Menucrd.css";
 
 const Menucrd = () => {
   const [menuItems, setMenuItems] = useState([]);
 
   useEffect(() => {
-<<<<<<< HEAD
     axios
-=======
-    axios   
->>>>>>> 8984db7 (Updated)
       .get("http://localhost:2025/menucard")
       .then((response) => {
         let sortedMenu = response.data.menu.sort((a, b) =>
           a.food_category.localeCompare(b.food_category)
         );
-<<<<<<< HEAD
         setMenuItems(sortedMenu);
-=======
-        setMenuItems(sortedMenu); 
->>>>>>> 8984db7 (Updated)
       })
       .catch((error) => console.error("Error fetching menu:", error));
   }, []);
@@ -33,12 +23,8 @@ const Menucrd = () => {
   return (
     <div>
       <Navbaar />
-<<<<<<< HEAD
-      <header className="text-center bg-dark text-light py-4">
-=======
-      
-      <header className="menu-header">
->>>>>>> 8984db7 (Updated)
+
+      <header className="menu-header text-center bg-dark text-light py-4">
         <h1 className="fw-bold display-3">Delicious Bites</h1>
         <p className="lead">Savor the Flavor, Enjoy the Moment</p>
       </header>
@@ -50,8 +36,12 @@ const Menucrd = () => {
               <div className="card menu-card shadow-lg">
                 <div className="card-body">
                   <h5 className="card-title text-primary">{item.menu_name}</h5>
-                  <p className="text-muted">Category: <strong>{item.food_category}</strong></p>
-                  <p><strong>Quantity:</strong> {item.quantity}</p>
+                  <p className="text-muted">
+                    Category: <strong>{item.food_category}</strong>
+                  </p>
+                  <p>
+                    <strong>Quantity:</strong> {item.quantity}
+                  </p>
                   <p className="fw-bold text-danger">₹{item.menu_price}</p>
                   <button className="btn btn-warning">
                     <i className="fas fa-shopping-cart"></i> Order Now
@@ -63,11 +53,7 @@ const Menucrd = () => {
         </div>
       </section>
 
-<<<<<<< HEAD
-      <footer className="text-center bg-dark text-light py-3">
-=======
-      <footer className="menu-footer">
->>>>>>> 8984db7 (Updated)
+      <footer className="menu-footer text-center bg-dark text-light py-3">
         <p>&copy; 2024 Delicious Bites | All Rights Reserved</p>
       </footer>
     </div>
