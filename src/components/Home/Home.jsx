@@ -48,6 +48,12 @@ export default function Home() {
                     <p><b>📧 Email:</b> contact@deliciousbites.com</p>
                 </div>
             </div>
+<<<<<<< HEAD
+=======
+            <footer className="menu-footer">
+        <p>&copy; 2024 Delicious Bites | All Rights Reserved</p>
+      </footer>
+>>>>>>> 8984db7 (Updated)
         </>
     );
 }

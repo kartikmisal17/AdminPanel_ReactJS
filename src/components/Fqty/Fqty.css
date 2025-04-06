@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #fefefe;
+}
+
+.fqty-header {
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    color: white;
+    text-align: center;
+    padding: 40px 0;
+    animation: fadeDown 0.8s ease-out;
+}
+
+.fqty-header h1 {
+    font-size: 3.2rem;
+    font-weight: 600;
+}
+
+.table-section {
+    margin: 30px auto;
+    width: 95%;
+    animation: fadeIn 1s ease-in;
+}
+
+.styled-table thead {
+    background-color: #ff4b2b;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+}
+
+.styled-table tbody tr {
+    text-align: center;
+    transition: background 0.3s ease;
+}
+
+.styled-table tbody tr:hover {
+    background-color: #ffe6e6;
+}
+
+.add-section {
+    background: linear-gradient(to right,#ff416c, #ff4b2b,#000000);
+    padding: 40px 20px;
+    margin: 40px auto;
+    border-top: 5px solid #ff4b2b;
+    max-width: 600px;
+    border-radius: 12px;
+    animation: slideUp 1s ease-in-out;
+}
+
+.add-section h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color:white;
+    font-weight: 600;
+}
+
+.form-label-white {
+    color: white;
+}
+
+.add-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.add-button {
+    background: linear-gradient(to right,#000000, #ff4b2b,#ff416c);
+    border: none;
+    padding: 12px 30px;
+    color: white;
+    font-size: 16px;
+    border-radius: 6px;
+    margin-top: 10px;
+    align-self: center;
+    transition: all 0.3s ease;
+}
+
+.add-button:hover {
+    background-color: #e23c61;
+}
+
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1055;
+}
+
+.toast {
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    min-width: 250px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.toast.bg-success {
+    background-color: #28a745 !important;
+}
+.toast.bg-danger {
+    background-color: #9901ff !important;
+}
+
+.modal-content {
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+
+@keyframes fadeDown {
+    0% {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    0% {
+        transform: translateY(40px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
