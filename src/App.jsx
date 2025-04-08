@@ -7,6 +7,7 @@ import Menu from './components/Menu/Menu.jsx';
 import Fcat from './components/Fcat/Fcat.jsx';
 import Fqty from './components/Fqty/Fqty.jsx';
 import Privateroute from "./components/Privateroute/Privateroute.jsx";
+import Orders from './components/Food_Request/Orders.jsx';
 
 
 export default function App(){
@@ -17,6 +18,7 @@ export default function App(){
         <Route path="/" element={<Login />} />  
         <Route element={<Privateroute />}>
         <Route path="/home" element={<Home/>} />
+        <Route path="/orders" element={<Orders/>} />
         <Route path="/menucrd" element={<Menucrd/>} /> 
         <Route path="/menu" element={<Menu/>} />    
         <Route path="/fcat" element={<Fcat/>} />   

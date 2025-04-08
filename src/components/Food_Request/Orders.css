@@ -1,0 +1,111 @@
+/* Orders.css */
+
+.orders-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f7f9fc;
+}
+
+h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #2c3e50;
+}
+
+.summary-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 2rem;
+  align-items: center;
+}
+
+.summary-box p {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.summary-box button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  margin-left: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.summary-box button:hover {
+  background-color: #2980b9;
+}
+
+.order-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.order-item {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
+}
+
+.order-item:hover {
+  transform: translateY(-4px);
+}
+
+.order-item strong {
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.order-item ul {
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+}
+
+.order-item li {
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.delete-btn {
+  margin-top: 1rem;
+  background: linear-gradient(to right,#000000,#ff416c, #ff4b2b);
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+@media (max-width: 768px) {
+  .summary-box {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .summary-box button {
+    margin-left: 0;
+  }
+}

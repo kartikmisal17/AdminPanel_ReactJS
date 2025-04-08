@@ -43,9 +43,9 @@ const Menucrd = () => {
                     <strong>Quantity:</strong> {item.quantity}
                   </p>
                   <p className="fw-bold text-danger">₹{item.menu_price}</p>
-                  <button className="btn btn-warning">
+                  {/* <button className="btn btn-warning">
                     <i className="fas fa-shopping-cart"></i> Order Now
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>

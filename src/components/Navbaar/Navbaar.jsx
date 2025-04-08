@@ -19,6 +19,9 @@ function Navbaar() {
   function home(){
     navigate('/home') 
   }
+  function orders(){
+    navigate('/orders') 
+  }
  
   function menucard(){
     navigate('/menucrd') 
@@ -50,6 +53,7 @@ function Navbaar() {
         <Navbar.Collapse id="navbarScroll">
           <Nav className="me-auto my-2 my-lg-0"style={{ maxHeight: '100px' }}navbarScroll  >
             <Nav.Link href="#" onClick={home}>Home</Nav.Link>
+            <Nav.Link href="#" onClick={orders}>Orders</Nav.Link>
             <Nav.Link href="#" onClick={menucard}>Menu Card</Nav.Link>
             <Nav.Link href="#" onClick={menu}>Menu </Nav.Link>
             <Nav.Link href="#" onClick={fcat}>Food Category</Nav.Link>
