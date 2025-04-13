@@ -95,7 +95,7 @@ export default function Fcat() {
             </ToastContainer>
 
             <header className="menu-header">
-                <h1>🍛 Food Categories</h1>
+                <h1>📑 Food Categories</h1>
             </header>
 
             <div className="table-section">

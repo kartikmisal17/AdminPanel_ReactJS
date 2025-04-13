@@ -1,4 +1,3 @@
-// Orders.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -8,28 +7,43 @@ import "./Orders.css";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
+  const [stats, setStats] = useState({
+    totalmenus: 0,
+    totalcategories: 0,
+    totalquantities: 0,
+  });
 
   useEffect(() => {
     fetchOrders();
+    fetchStats();
   }, []);
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://192.168.104.169:2025/getorders");
+      const res = await axios.get("http://localhost:2025/getorders");
       setOrders(res.data.orders || []);
-      toast.success("Orders fetched");
+      toast.success("Orders fetched", { toastId: "fetch-orders-success" });
     } catch (err) {
-      toast.error("Failed to fetch orders");
+      toast.error("Failed to fetch orders", { toastId: "fetch-orders-error" });
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      const res = await axios.get("http://localhost:2025/stats");
+      setStats(res.data);
+    } catch (err) {
+      toast.error("Failed to fetch stats", { toastId: "fetch-stats-error" });
     }
   };
 
   const deleteOrder = async (id) => {
     try {
-      await axios.delete(`http://192.168.104.169:2025/deleteorder/${id}`);
-      toast.success("Order deleted");
+      await axios.delete(`http://localhost:2025/deleteorder/${id}`);
+      toast.success("Order deleted", { toastId: `delete-${id}` });
       fetchOrders();
     } catch (err) {
-      toast.error("Failed to delete order");
+      toast.error("Failed to delete order", { toastId: `delete-error-${id}` });
     }
   };
 
@@ -54,7 +68,6 @@ const Orders = () => {
     0
   );
 
-  // Helper to format ISO string to local YYYY-MM-DD
   const formatDateToYYYYMMDD = (isoString) => {
     const date = new Date(isoString);
     const year = date.getFullYear();
@@ -63,7 +76,6 @@ const Orders = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // Today's date string
   const today = new Date();
   const todayStr = `${today.getFullYear()}-${(today.getMonth() + 1)
     .toString()
@@ -82,7 +94,27 @@ const Orders = () => {
     <div className="orders-container">
       <Navbaar />
       <ToastContainer />
-      <h2>📋 Order Management</h2>
+      <br /><br />
+
+      <h2>🗃️ Menu's Stats</h2>
+
+      <div className="stats-cards">
+        <div className="stat-card">
+          <h4>Total Menus Available</h4>
+          <p>{stats.totalmenus}</p>
+        </div>
+        <div className="stat-card">
+          <h4>Total Food Categories</h4>
+          <p>{stats.totalcategories}</p>
+        </div>
+        <div className="stat-card">
+          <h4>Total Food Quantities</h4>
+          <p>{stats.totalquantities}</p>
+        </div>
+      </div>
+
+      <h2 className="order-title">📋 Order Management</h2>
+
       <div className="summary-box">
         <p>Total Orders: {orders.length}</p>
         <p>Total Revenue: ₹{totalRevenue}</p>
@@ -90,36 +122,53 @@ const Orders = () => {
         <button onClick={fetchOrders}>🔄 Refresh</button>
         <button onClick={exportToExcel}>📤 Export to Excel</button>
       </div>
-      <ul className="order-list">
-        {orders.map((o, idx) => (
-          <li key={idx} className="order-item">
-            <strong>{o.name}</strong> - {o.contact}
-            <br />
-            Date: {o.order_date} | Time: {o.order_time}
-            <br />
-            <strong>
-              Total: ₹
-              {o.items.reduce(
-                (sum, i) => sum + i.menu_price * i.quantity,
-                0
-              )}
-            </strong>
-            <ul>
-              {o.items.map((item, i) => (
-                <li key={i}>
-                  {item.menu_name} × {item.quantity} @ ₹{item.menu_price}
-                </li>
-              ))}
-            </ul>
-            <button
-              className="delete-btn"
-              onClick={() => deleteOrder(o.order_id)}
-            >
-              ❌ Delete
-            </button>
-          </li>
-        ))}
-      </ul>
+
+      <table className="order-table">
+        <thead>
+          <tr>
+            <th>Customer Name</th>
+            <th>Contact</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Items Order</th>
+            <th>Total (₹)</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders.map((o, idx) => (
+            <tr key={idx}>
+              <td>{o.name}</td>
+              <td>{o.contact}</td>
+              <td>{o.order_date}</td>
+              <td>{o.order_time}</td>
+              <td>
+                <ul>
+                  {o.items.map((item, i) => (
+                    <li key={i}>
+                      {item.menu_name} × {item.quantity} @ ₹{item.menu_price}
+                    </li>
+                  ))}
+                </ul>
+              </td>
+              <td>
+                {o.items.reduce(
+                  (sum, i) => sum + i.menu_price * i.quantity,
+                  0
+                )}
+              </td>
+              <td>
+                <button
+                  className="delete-btn"
+                  onClick={() => deleteOrder(o.order_id)}
+                >
+                  ❌ Delete
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

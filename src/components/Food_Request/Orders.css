@@ -15,6 +15,43 @@ h2 {
   color: #2c3e50;
 }
 
+/* 🔥 NEW: Stat Cards Section */
+.stats-cards {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  min-width: 180px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
+  border-left: 4px solid #3498db;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+}
+
+.stat-card h4 {
+  font-size: 1rem;
+  color: #2c3e50;
+  margin-bottom: 0.4rem;
+}
+
+.stat-card p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2980b9;
+}
+
+/* Summary Box */
 .summary-box {
   display: flex;
   flex-wrap: wrap;
@@ -48,44 +85,46 @@ h2 {
   background-color: #2980b9;
 }
 
-.order-list {
-  list-style: none;
-  padding: 0;
-  display: grid;
-  gap: 1.5rem;
-}
-
-.order-item {
-  background-color: #ffffff;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  transition: transform 0.2s ease;
-}
-
-.order-item:hover {
-  transform: translateY(-4px);
-}
-
-.order-item strong {
-  color: #2c3e50;
-  font-size: 1.1rem;
-}
-
-.order-item ul {
-  margin-top: 0.5rem;
-  padding-left: 1rem;
-}
-
-.order-item li {
-  margin: 0.3rem 0;
+/* ✅ NEW: Order Table Style */
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
   font-size: 0.95rem;
+  background-color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.order-table th,
+.order-table td {
+  border: 1px solid #e0e0e0;
+  padding: 12px 15px;
+  vertical-align: top;
+  text-align: left;
+}
+
+.order-table th {
+  background-color: #ecf0f1;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.order-table td ul {
+  padding-left: 16px;
+  margin: 0;
+}
+
+.order-table td ul li {
+  margin: 0.3rem 0;
+  font-size: 0.92rem;
   color: #555;
 }
 
+/* Delete Button inside table */
 .delete-btn {
-  margin-top: 1rem;
-  background: linear-gradient(to right,#000000,#ff416c, #ff4b2b);
+  background: linear-gradient(to right, #000000, #ff416c, #ff4b2b);
   color: white;
   border: none;
   padding: 0.4rem 1rem;
@@ -98,6 +137,7 @@ h2 {
   background-color: #c0392b;
 }
 
+/* Responsive */
 @media (max-width: 768px) {
   .summary-box {
     flex-direction: column;
@@ -107,5 +147,16 @@ h2 {
 
   .summary-box button {
     margin-left: 0;
+  }
+
+  .stats-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .order-table {
+    font-size: 0.85rem;
+    overflow-x: auto;
+    display: block;
   }
 }

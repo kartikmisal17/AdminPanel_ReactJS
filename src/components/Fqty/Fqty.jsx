@@ -89,7 +89,7 @@ export default function Fqty() {
             </ToastContainer>
 
             <header className="fqty-header">
-                <h1>📦 Food Quantities</h1>
+                <h1>🔢 Food Quantities</h1>
             </header>
 
             <div className="table-section">
