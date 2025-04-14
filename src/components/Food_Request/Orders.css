@@ -1,5 +1,4 @@
-/* Orders.css */
-
+/* General Styles */
 .orders-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -15,7 +14,7 @@ h2 {
   color: #2c3e50;
 }
 
-/* 🔥 NEW: Stat Cards Section */
+/* 🔥 Stat Cards Section */
 .stats-cards {
   display: flex;
   justify-content: center;
@@ -62,6 +61,7 @@ h2 {
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   margin-bottom: 2rem;
   align-items: center;
+  gap: 1rem;
 }
 
 .summary-box p {
@@ -85,7 +85,7 @@ h2 {
   background-color: #2980b9;
 }
 
-/* ✅ NEW: Order Table Style */
+/* ✅ Order Table Style */
 .order-table {
   width: 100%;
   border-collapse: collapse;
@@ -124,7 +124,7 @@ h2 {
 
 /* Delete Button inside table */
 .delete-btn {
-  background: linear-gradient(to right, #000000, #ff416c, #ff4b2b);
+  background: linear-gradient(to bottom, #000000, #ff4b2b);
   color: white;
   border: none;
   padding: 0.4rem 1rem;
@@ -137,7 +137,148 @@ h2 {
   background-color: #c0392b;
 }
 
-/* Responsive */
+/* Button for Row-wise Billing */
+.print-btn {
+  background: linear-gradient(to bottom, #000000, #ff4b2b);
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.print-btn:hover {
+  background: linear-gradient(to bottom, #646464, #ff2600);
+}
+
+/* 🌙 Month Selector Section */
+.month-selector {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  flex-wrap: wrap;
+}
+
+.month-selector label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #34495e;
+}
+
+.month-selector select {
+  padding: 0.5rem 0.8rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fdfdfd;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.month-selector select:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.month-selector p {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #27ae60;
+  margin: 0;
+}
+
+/* Search Box */
+.search-box {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.search-box input {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+  max-width: 400px;
+  transition: border-color 0.2s ease;
+}
+
+.search-box input:focus {
+  border-color: #3498db;
+}
+
+/* Billing Details Modal */
+.billing-details-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.billing-details-modal.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.billing-details-content {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 600px;
+  max-width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.billing-details-content h3 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #34495e;
+}
+
+.billing-details-content p {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #555;
+}
+
+.billing-details-content ul {
+  margin-bottom: 1.5rem;
+}
+
+.billing-details-content ul li {
+  margin-bottom: 0.5rem;
+}
+
+.billing-details-content .close-btn {
+  background-color: #e74c3c;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
+}
+
+.billing-details-content .close-btn:hover {
+  background-color: #c0392b;
+}
+
+/* Responsive Styles */
 @media (max-width: 768px) {
   .summary-box {
     flex-direction: column;
@@ -158,5 +299,24 @@ h2 {
     font-size: 0.85rem;
     overflow-x: auto;
     display: block;
+  }
+
+  .month-selector {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .month-selector p {
+    margin-top: 0.5rem;
+  }
+
+  .billing-details-content {
+    width: 90%;
+    padding: 1.5rem;
+  }
+
+  /* Adjust the search input field */
+  .search-box input {
+    max-width: 100%;
   }
 }
