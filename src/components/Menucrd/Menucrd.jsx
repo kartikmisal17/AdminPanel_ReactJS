@@ -25,7 +25,7 @@ const Menucrd = () => {
       <Navbaar />
 
       <header className="menu-header text-center bg-dark text-light py-4">
-        <h1 className="fw-bold display-3">Delicious Bites</h1>
+        <h1 className="fw-bold display-3">Royal Bee Retreat</h1>
         <p className="lead">Savor the Flavor, Enjoy the Moment</p>
       </header>
 
@@ -54,7 +54,7 @@ const Menucrd = () => {
       </section>
 
       <footer className="menu-footer text-center bg-dark text-light py-3">
-        <p>&copy; 2024 Delicious Bites | All Rights Reserved</p>
+        <p>&copy; 2024 Royal Bee Retreat | All Rights Reserved</p>
       </footer>
     </div>
   );

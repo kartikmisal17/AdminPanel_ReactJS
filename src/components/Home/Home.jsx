@@ -16,7 +16,7 @@ export default function Home() {
           <Image src="pexels-chanwalrus-958545.jpg" className="hero-image" fluid />
           <div className="hero-text">
             <h1>
-              Welcome to <span>Delicious Bites</span>
+              Welcome to <span> Royal Bee Retreat</span>
             </h1>
             <p>Experience exquisite dining with an unforgettable ambiance.</p>
             <Button className="explore-btn">View Menu</Button>
@@ -27,7 +27,7 @@ export default function Home() {
         <div className="about-section">
           <h2>Who We Are</h2>
           <p>
-            At <b>Delicious Bites</b>, we bring you a world of flavors crafted by expert chefs. Enjoy a delightful experience with our handpicked ingredients and signature dishes that will tantalize your taste buds.
+            At <b>Royal Bee Retreat</b>, we bring you a world of flavors crafted by expert chefs. Enjoy a delightful experience with our handpicked ingredients and signature dishes that will tantalize your taste buds.
           </p>
         </div>
 
@@ -43,13 +43,13 @@ export default function Home() {
           <h2>Contact Us</h2>
           <p><b>📍 Location:</b> 123 Food Street, Culinary City</p>
           <p><b>📞 Phone:</b> +1 234 567 890</p>
-          <p><b>📧 Email:</b> contact@deliciousbites.com</p>
+          <p><b>📧 Email:</b> contact@royalbeeretreat.com</p>
         </div>
       </div>
 
       {/* Footer */}
       <footer className="menu-footer text-center bg-dark text-light py-3">
-        <p>&copy; 2024 Delicious Bites | All Rights Reserved</p>
+        <p>&copy; 2024 Royal Bee Retreat | All Rights Reserved</p>
       </footer>
     </>
   );

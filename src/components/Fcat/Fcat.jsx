@@ -190,7 +190,7 @@ export default function Fcat() {
             </div>
 
             <footer className="menu-footer">
-                <p>&copy; 2024 Delicious Bites | All Rights Reserved</p>
+                <p>&copy; 2024 Royal Bee Retreat | All Rights Reserved</p>
             </footer>
         </>
     );

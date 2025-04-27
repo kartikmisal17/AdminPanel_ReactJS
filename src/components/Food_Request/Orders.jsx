@@ -2,116 +2,151 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import Navbaar from "../Navbaar/Navbaar";
-import * as XLSX from "xlsx"; // For exporting data to Excel
+import * as XLSX from "xlsx";
 import "./Orders.css";
 
 const Orders = () => {
-  // State to hold all the orders
   const [orders, setOrders] = useState([]);
-  // State to hold stats like total menus, categories, and quantities
+  const [allOrders, setAllOrders] = useState([]);
   const [stats, setStats] = useState({
     totalmenus: 0,
     totalcategories: 0,
     totalquantities: 0,
   });
-  // State to store the selected month for revenue filtering
-  const [selectedMonth, setSelectedMonth] = useState("");
-  // State to hold search input (name or contact)
   const [searchInput, setSearchInput] = useState("");
+  const [selectedOrders, setSelectedOrders] = useState([]);
+  const [cottages, setCottages] = useState([]);
+  const [selectedCottage, setSelectedCottage] = useState("");
 
-  // Fetch initial data for orders and stats when the component mounts
+
   useEffect(() => {
-    fetchOrders(); // Fetch orders data
-    fetchStats();  // Fetch stats data
+    fetchOrders();
+    fetchStats();
+    fetchCottages();
   }, []);
 
-  // Function to fetch orders from the backend API
   const fetchOrders = async () => {
     try {
-      const response = await axios.get("http://localhost:2025/getorders"); // API call to get orders
-      setOrders(response.data.orders || []); // Set orders to state
+      const response = await axios.get("http://localhost:2025/getorders");
+      setOrders(response.data.orders || []);
+      setAllOrders(response.data.orders || []);
       toast.success("Orders fetched successfully", { toastId: "fetch-orders-success" });
     } catch (error) {
       toast.error("Failed to fetch orders", { toastId: "fetch-orders-error" });
     }
   };
 
-  // Function to fetch stats like total menus, categories, and quantities
   const fetchStats = async () => {
     try {
-      const response = await axios.get("http://localhost:2025/stats"); // API call to get stats
-      setStats(response.data); // Set stats to state
+      const response = await axios.get("http://localhost:2025/stats");
+      setStats(response.data);
     } catch (error) {
       toast.error("Failed to fetch stats", { toastId: "fetch-stats-error" });
     }
   };
 
-  // Function to delete an order by its ID
+  const fetchCottages = async () => {
+    try {
+      const response = await axios.get("http://localhost:2025/getcottages");
+      setCottages(response.data.cottages || []);
+    } catch (error) {
+      toast.error("Failed to fetch cottages");
+    }
+  };
+
+  const fetchOrdersByCottage = async (cottageId) => {
+    try {
+      const response = await axios.get(`http://localhost:2025/getordersbycottage/${cottageId}`);
+      setOrders(response.data.orders || []);
+      setSelectedCottage(cottageId);
+    } catch (error) {
+      toast.error("Failed to fetch orders by cottage");
+    }
+  };
+
+  const resetCottageFilter = () => {
+    setOrders(allOrders);
+    setSelectedCottage("");
+  };
+
   const deleteOrder = async (id) => {
     try {
-      await axios.delete(`http://localhost:2025/deleteorder/${id}`); // API call to delete the order
+      await axios.delete(`http://localhost:2025/deleteorder/${id}`);
       toast.success("Order deleted successfully", { toastId: `delete-${id}` });
-      fetchOrders(); // Refresh orders after deletion
+      fetchOrders();
     } catch (error) {
       toast.error("Failed to delete order", { toastId: `delete-error-${id}` });
     }
   };
 
-  // Function to export orders data to an Excel file
   const exportToExcel = () => {
     const data = orders.map((order) => {
-      const total = order.items.reduce((sum, item) => sum + item.menu_price * item.quantity, 0); // Calculate total for each order
+      const total = order.items.reduce((sum, item) => sum + item.menu_price * item.quantity, 0);
       return {
         Name: order.name,
         Contact: order.contact,
+        Cottage: order.cottage_name,
         Date: order.order_date,
         Time: order.order_time,
-        Total: total, // Add total amount for each order
+        Total: total,
       };
     });
 
-    const worksheet = XLSX.utils.json_to_sheet(data); // Create Excel sheet from JSON data
-    const workbook = XLSX.utils.book_new(); // Create a new workbook
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Orders"); // Append sheet to workbook
-    XLSX.writeFile(workbook, "orders_summary.xlsx"); // Save as Excel file
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Orders");
+    XLSX.writeFile(workbook, "orders_summary.xlsx");
   };
 
-  // Function to calculate the total revenue from all orders
   const calculateTotalRevenue = () => {
     return orders.reduce((sum, order) => {
-      const orderTotal = order.items.reduce((itemSum, item) => itemSum + item.menu_price * item.quantity, 0); // Calculate total per order
-      return sum + orderTotal; // Add up all orders' totals
+      const orderTotal = order.items.reduce((itemSum, item) => itemSum + item.menu_price * item.quantity, 0);
+      return sum + orderTotal;
     }, 0);
   };
 
-  // Function to calculate today's revenue based on the current date
   const calculateTodaysRevenue = () => {
     const today = new Date();
-    const todayStr = today.toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+    const todayStr = today.toISOString().split("T")[0];
     return orders
-      .filter((order) => formatDate(order.order_date) === todayStr) // Filter orders by today's date
+      .filter((order) => formatDate(order.order_date) === todayStr)
       .reduce((sum, order) => {
         const orderTotal = order.items.reduce((itemSum, item) => itemSum + item.menu_price * item.quantity, 0);
         return sum + orderTotal;
       }, 0);
   };
 
-  // Function to get revenue for a specific month
-  const getMonthRevenue = (month) => {
-    if (!month) return 0; // If no month is selected, return 0
+  const calculateWeeklyRevenue = () => {
+    const today = new Date();
+    const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
     return orders
-      .filter((order) => {
-        const date = new Date(order.order_date);
-        const orderMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`; // Get the month in YYYY-MM format
-        return orderMonth === month; // Filter orders by the selected month
-      })
+      .filter((order) => new Date(order.order_date) >= startOfWeek)
       .reduce((sum, order) => {
         const orderTotal = order.items.reduce((itemSum, item) => itemSum + item.menu_price * item.quantity, 0);
         return sum + orderTotal;
       }, 0);
   };
 
-  // Utility function to format date as YYYY-MM-DD
+  const calculateMonthlyRevenue = () => {
+    const today = new Date();
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    return orders
+      .filter((order) => new Date(order.order_date) >= startOfMonth)
+      .reduce((sum, order) => {
+        const orderTotal = order.items.reduce((itemSum, item) => itemSum + item.menu_price * item.quantity, 0);
+        return sum + orderTotal;
+      }, 0);
+  };
+
+  const calculateCottageRevenue = (cottageName) => {
+    return orders
+      .filter((order) => order.cottage_name === cottageName)
+      .reduce((sum, order) => {
+        const orderTotal = order.items.reduce((itemSum, item) => itemSum + item.menu_price * item.quantity, 0);
+        return sum + orderTotal;
+      }, 0);
+  };
+
   const formatDate = (isoString) => {
     const date = new Date(isoString);
     const yyyy = date.getFullYear();
@@ -120,116 +155,168 @@ const Orders = () => {
     return `${yyyy}-${mm}-${dd}`;
   };
 
-  // Function to handle month selection for revenue filter
-  const handleMonthChange = (e) => {
-    setSelectedMonth(e.target.value); // Update the selected month
+  const handleSelectOrder = (orderId) => {
+    setSelectedOrders((prevSelectedOrders) =>
+      prevSelectedOrders.includes(orderId)
+        ? prevSelectedOrders.filter((id) => id !== orderId)
+        : [...prevSelectedOrders, orderId]
+    );
   };
 
-  // Function to generate a printable bill for a specific order
-  const printBill = (order) => {
-    const total = order.items.reduce((sum, item) => sum + item.menu_price * item.quantity, 0); // Calculate the total of the order
-    const upiId = "9130357742@ybl"; // Static UPI ID for payments
-    const upiLink = `upi://pay?pa=${upiId}&pn=Delicious Bites&am=${total}&cu=INR`; // UPI payment link
-    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(upiLink)}&size=200x200`; // Generate QR code for UPI link
+  const handleSearch = (e) => {
+    setSearchInput(e.target.value);
+  };
 
-    // Open a new window and write the bill details in HTML format
-    const billWindow = window.open("", "_blank");
-    billWindow.document.write(`
-      <html>
+  
+  const printBill = () => {
+    const selectedCustomerOrders = orders.filter((order) =>
+      selectedOrders.includes(order.order_id)
+    );
+
+    const totalAmount = selectedCustomerOrders.reduce((sum, order) => {
+      return sum + order.items.reduce((itemSum, item) => itemSum + item.menu_price * item.quantity, 0);
+    }, 0);
+
+    const upiId = "9130357742@ybl";
+    const upiLink = `upi://pay?pa=${upiId}&pn=Royal Bee Retreat&am=${totalAmount}&cu=INR`;
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(upiLink)}&size=200x200`;
+
+    const htmlContent = `
+    <html>
       <head>
         <title>Customer Bill</title>
         <style>
-          body { font-family: Arial; padding: 20px; }
-          h2 { text-align: center; }
-          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-          th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-          .qr-container { text-align: center; margin-top: 30px; }
-          .qr-container img { border: 1px solid #ccc; padding: 10px; }
+          @media print {
+            body {
+              width: 80mm; /* 80mm standard thermal printer width */
+              font-family: Arial, sans-serif;
+              font-size: 12px;
+              padding: 5px;
+              margin: 0;
+            }
+            h1, h2, h3 {
+              font-size: 16px;
+              margin: 5px 0;
+              text-align: center;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 10px;
+            }
+            th, td {
+              border-bottom: 1px dashed #000;
+              padding: 4px 0;
+              text-align: left;
+              font-size: 12px;
+            }
+            .qr-container {
+              text-align: center;
+              margin-top: 10px;
+            }
+            .qr-container img {
+              width: 100px;
+              height: 100px;
+              margin: 5px auto;
+              display: block;
+            }
+            .total-row td {
+              font-weight: bold;
+              border-top: 1px solid #000;
+            }
+            hr {
+              border: none;
+              border-top: 1px dashed #000;
+              margin: 10px 0;
+            }
+            p {
+              margin: 2px 0;
+            }
+          }
         </style>
       </head>
       <body>
-        <h1 style="text-align: center;">Delicious Bites</h1>
+        <h1>Royal Bee Retreat</h1>
         <h2>🧾 Customer Bill</h2>
-        <p><strong>Name:</strong> ${order.name}</p>
-        <p><strong>Contact:</strong> ${order.contact}</p>
-        <p><strong>Date:</strong> ${order.order_date}</p>
-        <p><strong>Time:</strong> ${order.order_time}</p>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th>Qty</th>
-              <th>Price</th>
-              <th>Subtotal</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${order.items
-              .map(
-                (item) => `
+        ${selectedCustomerOrders.map((order) => `
+          <p><strong>Name:</strong> ${order.name}</p>
+          <p><strong>Contact:</strong> ${order.contact}</p>
+          <p><strong>Cottage:</strong> ${order.cottage_name || '-'}</p>
+          <p><strong>Date:</strong> ${formatDate(order.order_date)}</p>
+          <p><strong>Time:</strong> ${order.order_time}</p>
+          <table>
+            <thead>
+              <tr><th>Item</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
+            </thead>
+            <tbody>
+              ${order.items.map(item => `
                 <tr>
                   <td>${item.menu_name}</td>
                   <td>${item.quantity}</td>
                   <td>₹${item.menu_price}</td>
                   <td>₹${item.menu_price * item.quantity}</td>
                 </tr>
-              `
-              )
-              .join("")}
-          </tbody>
-        </table>
-
-        <h3>Total Amount: ₹${total}</h3>
-
+              `).join("")}
+              <tr class="total-row">
+                <td colspan="3">Order Subtotal</td>
+                <td>₹${order.items.reduce((sum, item) => sum + item.menu_price * item.quantity, 0)}</td>
+              </tr>
+            </tbody>
+          </table>
+          <hr>
+        `).join("")}
+        <h3>Total: ₹${totalAmount}</h3>
         <div class="qr-container">
-          <h3>Scan to Pay via UPI</h3>
+          <h3>Scan to Pay</h3>
           <img src="${qrCodeUrl}" alt="UPI QR Code" />
           <p><em>UPI ID: ${upiId}</em></p>
-          <p><strong>Total Amount: ₹${total}</strong></p>
-          <p>Scan QR to pay ₹${total} to Delicious Bites</p>
-
+          <p><strong>Amount: ₹${totalAmount}</strong></p>
         </div>
-
-        <script>window.onload = () => window.print();</script>
       </body>
-      </html>
-    `);
-    billWindow.document.close();
+    </html>
+  `;
+  
+
+    const iframe = document.createElement("iframe");
+    iframe.style.position = "fixed";
+    iframe.style.right = "0";
+    iframe.style.bottom = "0";
+    iframe.style.width = "0";
+    iframe.style.height = "0";
+    iframe.style.border = "0";
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(htmlContent);
+    doc.close();
+
+    iframe.onload = () => {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+      document.body.removeChild(iframe);
+    };
   };
 
-  // Generate a list of unique months from the orders for the dropdown
-  const uniqueMonths = [
-    ...new Set(
-      orders.map((order) => {
-        const date = new Date(order.order_date);
-        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-      })
-    ),
-  ];
+  const filteredOrders = orders.filter(order => {
+    const searchTerm = searchInput.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+    const combinedData = `${order.name || ''}${order.contact || ''}${order.cottage_name || ''}`.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+    return combinedData.includes(searchTerm);
+  });
 
-  // Filter orders based on search input (name or contact)
-  const filteredOrders = orders.filter(
-    (order) =>
-      order.name.toLowerCase().includes(searchInput.toLowerCase()) ||
-      order.contact.includes(searchInput)
-  );
-
-  // Function to calculate how many orders were placed today
-const calculateTodaysOrderCount = () => {
-  const today = new Date();
-  const todayStr = today.toISOString().split("T")[0]; // Format: YYYY-MM-DD
-  return orders.filter((order) => formatDate(order.order_date) === todayStr).length;
-};
-
+  const groupedOrders = filteredOrders.reduce((acc, order) => {
+    const key = order.cottage_name || "No Cottage";
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(order);
+    return acc;
+  }, {});
 
   return (
     <div className="orders-container">
-      <Navbaar /> {/* Navbar component */}
-      <ToastContainer /> {/* Toast notification container */}
+      <Navbaar />
+      <ToastContainer />
       <br /><br />
 
-      {/* Display Menu Stats */}
       <h2>🗃️ Menu's Stats</h2>
       <div className="stats-cards">
         <div className="stat-card"><h4>Total Menus Available</h4><p>{stats.totalmenus}</p></div>
@@ -237,85 +324,83 @@ const calculateTodaysOrderCount = () => {
         <div className="stat-card"><h4>Total Food Quantities</h4><p>{stats.totalquantities}</p></div>
       </div>
 
-      {/* Order Management Section */}
       <h2 className="order-title">📋 Order Management</h2>
 
       <div className="summary-box">
-        <p>Total Orders: {filteredOrders.length}</p>
+        <p>Total Orders: {orders.length}</p>
         <p>Total Revenue: ₹{calculateTotalRevenue()}</p>
         <p>Today's Revenue: ₹{calculateTodaysRevenue()}</p>
-        <p>Today's Orders: {calculateTodaysOrderCount()}</p>
-
-
-        <div className="month-selector">
-          <label htmlFor="month">Monthwise Revenue: </label>
-          <select id="month" value={selectedMonth} onChange={handleMonthChange}>
-            <option value="">-- Select Month --</option>
-            {uniqueMonths.map((month, index) => (
-              <option key={index} value={month}>{month}</option>
-            ))}
-          </select>
-          {selectedMonth && (
-            <p>Revenue for {selectedMonth}: ₹{getMonthRevenue(selectedMonth)}</p>
-          )}
-        </div>
-
+        <p>Weekly Revenue: ₹{calculateWeeklyRevenue()}</p>
+        <p>Monthly Revenue: ₹{calculateMonthlyRevenue()}</p>
         <button onClick={fetchOrders}>🔄 Refresh</button>
         <button onClick={exportToExcel}>📤 Export to Excel</button>
       </div>
 
-      {/* Search Input */}
       <div className="search-box">
-        <input
-          type="text"
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          placeholder="Search Customer by Name or Contact"
-        />
+        <input type="text" value={searchInput} onChange={handleSearch} placeholder="Search by Name, Contact or Cottage" />
       </div>
 
-      {/* Orders Table */}
+      <div className="cottage-filter">
+        <select value={selectedCottage} onChange={(e) => fetchOrdersByCottage(e.target.value)}>
+          <option value="">-- Filter by Cottage --</option>
+          {cottages.map((cottage) => (
+            <option key={cottage.id} value={cottage.id}>{cottage.name}</option>
+          ))}
+        </select>
+        {selectedCottage && <button onClick={resetCottageFilter}>❌ Clear Filter</button>}
+      </div>
+
+      <button className="print-bill-btn" onClick={printBill}>
+        <span className="icon">🖨️</span> Print Selected Bills
+      </button>
+
       <table className="order-table">
         <thead>
           <tr>
+            <th>Select</th>
             <th>Customer Name</th>
             <th>Contact</th>
+            <th>Cottage</th>
             <th>Date</th>
             <th>Time</th>
             <th>Items Ordered</th>
             <th>Total (₹)</th>
             <th>Action</th>
-            <th>Print</th>
           </tr>
         </thead>
         <tbody>
-          {filteredOrders.map((order, idx) => {
-            const total = order.items.reduce((sum, item) => sum + item.menu_price * item.quantity, 0); // Calculate total for each order
-            return (
-              <tr key={idx}>
-                <td>{order.name}</td>
-                <td>{order.contact}</td>
-                <td>{order.order_date}</td>
-                <td>{order.order_time}</td>
-                <td>
-                  <ul>
-                    {order.items.map((item, i) => (
-                      <li key={i}>
-                        {item.menu_name} × {item.quantity} @ ₹{item.menu_price}
-                      </li>
-                    ))}
-                  </ul>
-                </td>
-                <td>{total}</td>
-                <td>
-                  <button className="delete-btn" onClick={() => deleteOrder(order.order_id)}>❌ Delete</button>
-                </td>
-                <td>
-                  <button className="print-btn" onClick={() => printBill(order)}>🖨️ Print</button>
+          {Object.entries(groupedOrders).map(([cottageName, group]) => (
+            <React.Fragment key={cottageName}>
+              <tr>
+                <td className="cottage-heading-row" colSpan="9" style={{ textAlign: 'center', fontSize: '28px', fontWeight: 'bold' }}>
+                  🏡 {cottageName} 
                 </td>
               </tr>
-            );
-          })}
+
+              {group.map((order) => {
+                const total = order.items.reduce((sum, item) => sum + item.menu_price * item.quantity, 0);
+                return (
+                  <tr key={order.order_id}>
+                    <td><input type="checkbox" checked={selectedOrders.includes(order.order_id)} onChange={() => handleSelectOrder(order.order_id)} /></td>
+                    <td>{order.name}</td>
+                    <td>{order.contact}</td>
+                    <td>{order.cottage_name || '-'}</td>
+                    <td>{formatDate(order.order_date)}</td>
+                    <td>{order.order_time}</td>
+                    <td>
+                      <ul>
+                        {order.items.map((item, i) => (
+                          <li key={i}>{item.menu_name} × {item.quantity} @ ₹{item.menu_price}</li>
+                        ))}
+                      </ul>
+                    </td>
+                    <td>{total}</td>
+                    <td><button className="delete-btn" onClick={() => deleteOrder(order.order_id)}>❌ Delete</button></td>
+                  </tr>
+                );
+              })}
+            </React.Fragment>
+          ))}
         </tbody>
       </table>
     </div>

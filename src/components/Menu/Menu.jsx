@@ -13,6 +13,7 @@ export default function Menu() {
     const [updateData, setUpdateData] = useState({ id: "", menu_name: "", menu_price: "", qid: "", fid: "" });
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [toast, setToast] = useState({ show: false, message: "", variant: "success" });
+    const [searchTerm, setSearchTerm] = useState(""); // For search
 
     useEffect(() => {
         fetchMenu();
@@ -111,6 +112,18 @@ export default function Menu() {
                 <h1>🍽️ Menu Management</h1>
             </header>
 
+            {/* 🔍 Search Bar Start */}
+            <div className="search-bar" style={{ textAlign: "center", margin: "20px" }}>
+                <input
+                    type="text"
+                    placeholder="Search Menu Name / Quantity ID / Category ID..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    style={{ width: "300px", padding: "8px", borderRadius: "5px", border: "1px solid #ccc" }}
+                />
+            </div>
+            {/* 🔍 Search Bar End */}
+
             <div className="table-section">
                 <Table className="styled-table" striped bordered hover responsive>
                     <thead>
@@ -125,23 +138,29 @@ export default function Menu() {
                         </tr>
                     </thead>
                     <tbody>
-                        {menu.map((item) => (
-                            <tr key={item.id}>
-                                <td>{item.id}</td>
-                                <td>{item.menu_name}</td>
-                                <td>{item.menu_price}</td>
-                                <td>{item.qid}</td>
-                                <td>{item.fid}</td>
-                                <td>
-                                    <Button variant="warning" onClick={() => {
-                                        setUpdateData({ ...item });
-                                        setShowUpdateModal(true);
-                                    }}>Update</Button>
-                                </td>
-                                <td>
-                                    <Button variant="danger" onClick={() => handleDelete(item.id)}>Delete</Button>
-                                </td>
-                            </tr>
+                        {menu
+                            .filter((item) =>
+                                item.menu_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                item.qid.toString().includes(searchTerm) ||
+                                item.fid.toString().includes(searchTerm)
+                            )
+                            .map((item) => (
+                                <tr key={item.id}>
+                                    <td>{item.id}</td>
+                                    <td>{item.menu_name}</td>
+                                    <td>{item.menu_price}</td>
+                                    <td>{item.qid}</td>
+                                    <td>{item.fid}</td>
+                                    <td>
+                                        <Button variant="warning" onClick={() => {
+                                            setUpdateData({ ...item });
+                                            setShowUpdateModal(true);
+                                        }}>Update</Button>
+                                    </td>
+                                    <td>
+                                        <Button variant="danger" onClick={() => handleDelete(item.id)}>Delete</Button>
+                                    </td>
+                                </tr>
                         ))}
                     </tbody>
                 </Table>
@@ -189,7 +208,7 @@ export default function Menu() {
             </div>
 
             <footer className="menu-footer text-center mt-5">
-                <p>&copy; 2024 Delicious Bites | All Rights Reserved</p>
+                <p>&copy; 2024 Royal Bee Retreat | All Rights Reserved</p>
             </footer>
         </>
     );

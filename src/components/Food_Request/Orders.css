@@ -214,6 +214,80 @@ h2 {
   border-color: #3498db;
 }
 
+.cottage-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+.cottage-filter select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.cottage-filter select:hover {
+  border-color: #999;
+}
+
+.cottage-filter button {
+  background: linear-gradient(to bottom, #000000, #ff4b2b);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.cottage-filter button:hover {
+  background-color: #e04848;
+}
+
+
+
+/* Print Selected Bills Button Style */
+.print-bill-btn {
+  background: linear-gradient(to right, #2980b9, #3498db);
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.print-bill-btn:hover {
+  background: linear-gradient(to right, #1f6fa1, #2980b9);
+  transform: scale(1.05);
+}
+
+.print-bill-btn:active {
+  transform: scale(1);
+}
+
+.print-bill-btn .icon {
+  font-size: 1.3rem;
+}
+
+/* Add a little spacing from other elements */
+.print-bill-btn-container {
+  text-align: center;
+  margin-top: 1rem;
+}
+
 /* Billing Details Modal */
 .billing-details-modal {
   position: fixed;
@@ -258,65 +332,28 @@ h2 {
 
 .billing-details-content ul {
   margin-bottom: 1.5rem;
+  padding-left: 20px;
 }
 
 .billing-details-content ul li {
+  font-size: 1rem;
   margin-bottom: 0.5rem;
+  color: #34495e;
 }
 
 .billing-details-content .close-btn {
   background-color: #e74c3c;
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.5rem;
   border-radius: 8px;
   cursor: pointer;
+  font-weight: bold;
   transition: background-color 0.3s ease;
-  font-size: 1rem;
+  border: none;
 }
 
 .billing-details-content .close-btn:hover {
   background-color: #c0392b;
 }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
-  .summary-box {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
 
-  .summary-box button {
-    margin-left: 0;
-  }
-
-  .stats-cards {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .order-table {
-    font-size: 0.85rem;
-    overflow-x: auto;
-    display: block;
-  }
-
-  .month-selector {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .month-selector p {
-    margin-top: 0.5rem;
-  }
-
-  .billing-details-content {
-    width: 90%;
-    padding: 1.5rem;
-  }
-
-  /* Adjust the search input field */
-  .search-box input {
-    max-width: 100%;
-  }
-}
