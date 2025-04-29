@@ -312,7 +312,7 @@ const Orders = () => {
   }, {});
 
   return (
-    <div className="orders-container">
+    <div>
       <Navbaar />
       <ToastContainer />
       <br /><br />

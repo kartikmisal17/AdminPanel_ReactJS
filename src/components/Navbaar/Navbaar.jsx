@@ -22,6 +22,9 @@ function Navbaar() {
   function orders(){
     navigate('/orders') 
   }
+  function cottage(){
+    navigate('/cottages') 
+  }
  
   function menucard(){
     navigate('/menucrd') 
@@ -55,6 +58,7 @@ function Navbaar() {
             <Nav.Link href="#" onClick={home}>Home</Nav.Link>
             <Nav.Link href="#" onClick={orders}>Orders</Nav.Link>
             <Nav.Link href="#" onClick={menucard}>Menu Card</Nav.Link>
+            <Nav.Link href="#" onClick={cottage}>Cottages</Nav.Link>
             <Nav.Link href="#" onClick={menu}>Menu </Nav.Link>
             <Nav.Link href="#" onClick={fcat}>Food Category</Nav.Link>
             <Nav.Link href="#" onClick={fqty}>Food Quantity</Nav.Link>           
