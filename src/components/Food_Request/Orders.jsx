@@ -184,60 +184,85 @@ const Orders = () => {
     const htmlContent = `
     <html>
       <head>
-        <title>Customer Bill</title>
+        
         <style>
-          @media print {
-            body {
-              width: 80mm; /* 80mm standard thermal printer width */
-              font-family: Arial, sans-serif;
-              font-size: 12px;
-              padding: 5px;
-              margin: 0;
-            }
-            h1, h2, h3 {
-              font-size: 16px;
-              margin: 5px 0;
-              text-align: center;
-            }
-            table {
-              width: 100%;
-              border-collapse: collapse;
-              margin-top: 10px;
-            }
-            th, td {
-              border-bottom: 1px dashed #000;
-              padding: 4px 0;
-              text-align: left;
-              font-size: 12px;
-            }
-            .qr-container {
-              text-align: center;
-              margin-top: 10px;
-            }
-            .qr-container img {
-              width: 100px;
-              height: 100px;
-              margin: 5px auto;
-              display: block;
-            }
-            .total-row td {
-              font-weight: bold;
-              border-top: 1px solid #000;
-            }
-            hr {
-              border: none;
-              border-top: 1px dashed #000;
-              margin: 10px 0;
-            }
-            p {
-              margin: 2px 0;
-            }
-          }
+        @media print {
+  @page {
+    size: 80mm auto; /* Fixed page width */
+    margin: 0; /* No page margin */
+  }
+
+  body {
+    width: 80mm; /* Fix the body width to match the page width */
+    margin: 0 auto; /* Center content */
+    padding: 0; /* No padding */
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    line-height: 1.3;
+  }
+
+  h1, h2, h3 {
+    text-align: center; /* Center headings */
+    margin: 0; /* Remove any unnecessary margin */
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  h2 {
+    font-size: 14px;
+  }
+
+  h3 {
+    font-size: 14px;
+  }
+
+  table {
+    width: 100%; /* Table takes full width */
+    border-collapse: collapse;
+    margin-top: 5px;
+  }
+
+  th, td {
+    padding: 2px 0;
+    border-bottom: 1px dashed #000;
+    font-size: 11px;
+  }
+
+  .qr-container {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .qr-container img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .total-row td {
+    font-weight: bold;
+    border-top: 1px solid #000;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px dashed #000;
+    margin: 6px 0;
+  }
+
+  p {
+    margin: 2px 0;
+  }
+}
+
+
+
         </style>
       </head>
       <body>
         <h1>Royal Bee Retreat</h1>
-        <h2>🧾 Customer Bill</h2>
+        <h2>Total Order Summary</h2>
         ${selectedCustomerOrders.map((order) => `
           <p><strong>Name:</strong> ${order.name}</p>
           <p><strong>Contact:</strong> ${order.contact}</p>
@@ -271,6 +296,7 @@ const Orders = () => {
           <img src="${qrCodeUrl}" alt="UPI QR Code" />
           <p><em>UPI ID: ${upiId}</em></p>
           <p><strong>Amount: ₹${totalAmount}</strong></p>
+          <h3 style="text-align:center;">Thank You,Visit Again!</h3>
         </div>
       </body>
     </html>
@@ -298,11 +324,38 @@ const Orders = () => {
     };
   };
 
-  const filteredOrders = orders.filter(order => {
-    const searchTerm = searchInput.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
-    const combinedData = `${order.name || ''}${order.contact || ''}${order.cottage_name || ''}`.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
-    return combinedData.includes(searchTerm);
-  });
+ const filteredOrders = orders.filter(order => {
+  const searchTerm = searchInput.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+
+  const dateObj = new Date(order.order_date);
+  const dd = String(dateObj.getDate()).padStart(2, '0');
+  const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const yyyy = dateObj.getFullYear();
+  const isoDate = `${yyyy}-${mm}-${dd}`;
+  const ddmm = `${dd}${mm}`;
+
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const mmm = monthNames[dateObj.getMonth()].toLowerCase();
+
+  const formats = [
+    `${dd}${mmm}`, // 29apr
+    `${mmm}${dd}`, // apr29
+    `${dd} ${mmm}`, // 29 apr
+    `${mmm} ${dd}`, // apr 29
+    `${ddmm}`,     // 2904
+    isoDate.toLowerCase().replace(/[^a-zA-Z0-9]/g, '') // 20250429
+  ];
+
+  const combinedData = `
+    ${order.name || ''}
+    ${order.contact || ''}
+    ${order.cottage_name || ''}
+    ${formats.join(' ')}
+  `.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+
+  return combinedData.includes(searchTerm);
+});
+
 
   const groupedOrders = filteredOrders.reduce((acc, order) => {
     const key = order.cottage_name || "No Cottage";
@@ -337,7 +390,7 @@ const Orders = () => {
       </div>
 
       <div className="search-box">
-        <input type="text" value={searchInput} onChange={handleSearch} placeholder="Search by Name, Contact or Cottage" />
+        <input type="text" value={searchInput} onChange={handleSearch} placeholder="Search by Name, Contact, Cottage or Date" />
       </div>
 
       <div className="cottage-filter">
