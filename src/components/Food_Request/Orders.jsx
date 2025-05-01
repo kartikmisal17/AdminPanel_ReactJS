@@ -18,7 +18,6 @@ const Orders = () => {
   const [cottages, setCottages] = useState([]);
   const [selectedCottage, setSelectedCottage] = useState("");
 
-
   useEffect(() => {
     fetchOrders();
     fetchStats();
@@ -138,15 +137,6 @@ const Orders = () => {
       }, 0);
   };
 
-  const calculateCottageRevenue = (cottageName) => {
-    return orders
-      .filter((order) => order.cottage_name === cottageName)
-      .reduce((sum, order) => {
-        const orderTotal = order.items.reduce((itemSum, item) => itemSum + item.menu_price * item.quantity, 0);
-        return sum + orderTotal;
-      }, 0);
-  };
-
   const formatDate = (isoString) => {
     const date = new Date(isoString);
     const yyyy = date.getFullYear();
@@ -167,7 +157,6 @@ const Orders = () => {
     setSearchInput(e.target.value);
   };
 
-  
   const printBill = () => {
     const selectedCustomerOrders = orders.filter((order) =>
       selectedOrders.includes(order.order_id)
@@ -181,94 +170,73 @@ const Orders = () => {
     const upiLink = `upi://pay?pa=${upiId}&pn=Royal Bee Retreat&am=${totalAmount}&cu=INR`;
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(upiLink)}&size=200x200`;
 
+    const cottageName = selectedCustomerOrders[0]?.cottage_name || "No Cottage";
+
     const htmlContent = `
-    <html>
+      <html>
       <head>
-        
         <style>
-        @media print {
-  @page {
-    size: 80mm auto; /* Fixed page width */
-    margin: 0; /* No page margin */
-  }
-
-  body {
-    width: 80mm; /* Fix the body width to match the page width */
-    margin: 0 auto; /* Center content */
-    padding: 0; /* No padding */
-    font-family: Arial, sans-serif;
-    font-size: 11px;
-    line-height: 1.3;
-  }
-
-  h1, h2, h3 {
-    text-align: center; /* Center headings */
-    margin: 0; /* Remove any unnecessary margin */
-  }
-
-  h1 {
-    font-size: 20px;
-  }
-
-  h2 {
-    font-size: 14px;
-  }
-
-  h3 {
-    font-size: 14px;
-  }
-
-  table {
-    width: 100%; /* Table takes full width */
-    border-collapse: collapse;
-    margin-top: 5px;
-  }
-
-  th, td {
-    padding: 2px 0;
-    border-bottom: 1px dashed #000;
-    font-size: 11px;
-  }
-
-  .qr-container {
-    margin-top: 10px;
-    text-align: center;
-  }
-
-  .qr-container img {
-    width: 80px;
-    height: 80px;
-  }
-
-  .total-row td {
-    font-weight: bold;
-    border-top: 1px solid #000;
-  }
-
-  hr {
-    border: none;
-    border-top: 1px dashed #000;
-    margin: 6px 0;
-  }
-
-  p {
-    margin: 2px 0;
-  }
-}
-
-
-
+          @media print {
+            @page {
+              size: 80mm auto;
+              margin: 0;
+            }
+            body {
+              width: 80mm;
+              margin: 0 auto;
+              padding: 0;
+              font-family: Arial, sans-serif;
+              font-size: 11px;
+              line-height: 1.3;
+            }
+              h1{
+              font-size:18px;
+              text-align: center;
+              margin: 0;
+              }
+            h2, h3 {
+              text-align: center;
+              margin: 0;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 5px;
+            }
+            th, td {
+              padding: 2px 0;
+              border-bottom: 1px dashed #000;
+              font-size: 11px;
+            }
+            .qr-container {
+              margin-top: 10px;
+              text-align: center;
+            }
+            .qr-container img {
+              width: 80px;
+              height: 80px;
+            }
+            .total-row td {
+              font-weight: bold;
+              border-top: 1px solid #000;
+            }
+            hr {
+              border: none;
+              border-top: 1px dashed #000;
+              margin: 6px 0;
+            }
+            p {
+              margin: 2px 0;
+            }
+          }
         </style>
       </head>
       <body>
         <h1>Royal Bee Retreat</h1>
-        <h2>Total Order Summary</h2>
-        ${selectedCustomerOrders.map((order) => `
-          <p><strong>Name:</strong> ${order.name}</p>
-          <p><strong>Contact:</strong> ${order.contact}</p>
-          <p><strong>Cottage:</strong> ${order.cottage_name || '-'}</p>
-          <p><strong>Date:</strong> ${formatDate(order.order_date)}</p>
-          <p><strong>Time:</strong> ${order.order_time}</p>
+        <h2>Order Summary</h2>
+        <h2>🏡 ${cottageName}</h2>
+        ${selectedCustomerOrders.map(order => `
+          <p><strong>Date:</strong> ${formatDate(order.order_date)} | <strong>Time:</strong> ${order.order_time}</p>
           <table>
             <thead>
               <tr><th>Item</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
@@ -283,7 +251,7 @@ const Orders = () => {
                 </tr>
               `).join("")}
               <tr class="total-row">
-                <td colspan="3">Order Subtotal</td>
+                <td colspan="3">Order Total</td>
                 <td>₹${order.items.reduce((sum, item) => sum + item.menu_price * item.quantity, 0)}</td>
               </tr>
             </tbody>
@@ -296,12 +264,11 @@ const Orders = () => {
           <img src="${qrCodeUrl}" alt="UPI QR Code" />
           <p><em>UPI ID: ${upiId}</em></p>
           <p><strong>Amount: ₹${totalAmount}</strong></p>
-          <h3 style="text-align:center;">Thank You,Visit Again!</h3>
+          <h3>Thank You, Visit Again!</h3>
         </div>
       </body>
-    </html>
-  `;
-  
+      </html>
+    `;
 
     const iframe = document.createElement("iframe");
     iframe.style.position = "fixed";
@@ -324,38 +291,25 @@ const Orders = () => {
     };
   };
 
- const filteredOrders = orders.filter(order => {
-  const searchTerm = searchInput.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+  const filteredOrders = orders.filter(order => {
+    const searchTerm = searchInput.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+    const dateObj = new Date(order.order_date);
+    const dd = String(dateObj.getDate()).padStart(2, '0');
+    const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const yyyy = dateObj.getFullYear();
+    const isoDate = `${yyyy}-${mm}-${dd}`;
+    const ddmm = `${dd}${mm}`;
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const mmm = monthNames[dateObj.getMonth()].toLowerCase();
 
-  const dateObj = new Date(order.order_date);
-  const dd = String(dateObj.getDate()).padStart(2, '0');
-  const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
-  const yyyy = dateObj.getFullYear();
-  const isoDate = `${yyyy}-${mm}-${dd}`;
-  const ddmm = `${dd}${mm}`;
+    const formats = [
+      `${dd}${mmm}`, `${mmm}${dd}`, `${dd} ${mmm}`, `${mmm} ${dd}`, `${ddmm}`, isoDate.toLowerCase().replace(/[^a-zA-Z0-9]/g, '')
+    ];
 
-  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const mmm = monthNames[dateObj.getMonth()].toLowerCase();
+    const combinedData = `${order.name || ''}${order.contact || ''}${order.cottage_name || ''}${formats.join(' ')}`.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
 
-  const formats = [
-    `${dd}${mmm}`, // 29apr
-    `${mmm}${dd}`, // apr29
-    `${dd} ${mmm}`, // 29 apr
-    `${mmm} ${dd}`, // apr 29
-    `${ddmm}`,     // 2904
-    isoDate.toLowerCase().replace(/[^a-zA-Z0-9]/g, '') // 20250429
-  ];
-
-  const combinedData = `
-    ${order.name || ''}
-    ${order.contact || ''}
-    ${order.cottage_name || ''}
-    ${formats.join(' ')}
-  `.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
-
-  return combinedData.includes(searchTerm);
-});
-
+    return combinedData.includes(searchTerm);
+  });
 
   const groupedOrders = filteredOrders.reduce((acc, order) => {
     const key = order.cottage_name || "No Cottage";
